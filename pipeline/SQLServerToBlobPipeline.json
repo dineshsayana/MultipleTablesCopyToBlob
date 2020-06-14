@@ -1,0 +1,167 @@
+{
+	"name": "SQLServerToBlobPipeline",
+	"properties": {
+		"description": "Copying data from SQL server (Source) to blob (Intermediate Staging)",
+		"activities": [
+			{
+				"name": "CopyCustomerDataSqlServerToAzureBlobActivity",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "Salessrc.customers_data"
+					},
+					{
+						"name": "Destination",
+						"value": "sales-staging-blob-container//"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"queryTimeout": "02:00:00"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "customer_id",
+									"type": "String"
+								},
+								"sink": {
+									"name": "customer_id",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "customer_unique_id",
+									"type": "String"
+								},
+								"sink": {
+									"name": "customer_unique_id",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "customer_zip_code_prefix",
+									"type": "Int32"
+								},
+								"sink": {
+									"name": "customer_zip_code_prefix",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "customer_city",
+									"type": "String"
+								},
+								"sink": {
+									"name": "customer_city",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "customer_state",
+									"type": "String"
+								},
+								"sink": {
+									"name": "customer_state",
+									"type": "String"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "Sales_sqldb_source",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Sales_Blob_Staging_Location",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "CopyOrderItemsDataSQLServerToAzureBlob",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "CopyCustomerDataSqlServerToAzureBlobActivity",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"queryTimeout": "02:00:00"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "OrderItems_Sqldb_cource",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "OrderItems_blob_staging",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

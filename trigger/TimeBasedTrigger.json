@@ -1,0 +1,25 @@
+{
+	"name": "TimeBasedTrigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "SQLServerToBlobPipeline",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 5,
+				"startTime": "2020-06-12T10:53:00Z",
+				"endTime": "2020-06-12T11:45:00Z",
+				"timeZone": "UTC"
+			}
+		}
+	}
+}

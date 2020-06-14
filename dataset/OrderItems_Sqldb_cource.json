@@ -1,0 +1,50 @@
+{
+	"name": "OrderItems_Sqldb_cource",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Sales_Source_Linked_Service",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "order_id",
+				"type": "nvarchar"
+			},
+			{
+				"name": "order_item_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "product_id",
+				"type": "nvarchar"
+			},
+			{
+				"name": "seller_id",
+				"type": "nvarchar"
+			},
+			{
+				"name": "shipping_limit_date",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "price",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "freight_value",
+				"type": "float",
+				"precision": 15
+			}
+		],
+		"typeProperties": {
+			"schema": "Salessrc",
+			"table": "order_items_data"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
